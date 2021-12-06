@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { ButtonCheckout } from './ButtonCheckout';
+
 
 const Overlay = styled.div`
   position: fixed;
@@ -27,60 +29,53 @@ const Banner = styled.div`
   background-image: url(${({ img }) => img});
   background-size: cover;
   background-position: center;
-  margin-bottom: 20px;
 `;
 
-const ModalInner = styled.div`
+const Content = styled.section`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: calc(100% - 200px);
+  padding: 30px;
+  
+`;
+
+const HeaderContent = styled.div`
   display: flex;
   justify-content: space-between;
+  font-size: 24px;
+  font-weight: 700;
+  font-family: 'Pacifico', cursive;
 `;
 
-const ModalTitle = styled.h2`
-  font-weight: 400;
-  display: inline-block;
-  margin-left: 37px;
-`;
+export const ModalItem = ({ openItem, setOpenItem, orders, setOrders }) => {
 
-const ModalPrice = styled.p`
-  font-family: Pacifico;
-  font-size: 30px;
-  display: inline-block;
-  margin-right: 53px;
-`;
-
-const Add = styled.button`
-  min-width: 250px;
-  padding: 20px 0;
-  background-color: #299b01;
-  color: white;
-  font-size: 21px;
-  border: transparent;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  margin-bottom: 63px;
-`;
-
-export const ModalItem = ({ openItem, setOpenItem }) => {
-
-  function closeModal(e) {
+  const closeModal = e => {
     if (e.target.id === 'overlay') {
       setOpenItem(null);
     }
   }
 
-  if (!openItem) return null;
+  const order = {
+    ...openItem
+  };
+
+  const addToOrder = () => {
+    setOrders([...orders, order]);
+    setOpenItem(null);
+  }
 
   return (
     <Overlay id="overlay" onClick={closeModal}>
       <Modal>
         <Banner img={openItem.img} />
-        <ModalInner>
-          <ModalTitle>{openItem.name}</ModalTitle>
-          <ModalPrice>{openItem.price.toLocaleString('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 })}</ModalPrice>
-        </ModalInner>
-        <Add>Добавить</Add>
+        <Content>
+          <HeaderContent>
+            <div>{openItem.name}</div>
+            <div>{openItem.price}</div>
+          </HeaderContent>
+          <ButtonCheckout onClick={addToOrder}>Добавить</ButtonCheckout>
+        </Content>
       </Modal>
     </Overlay>
   )
